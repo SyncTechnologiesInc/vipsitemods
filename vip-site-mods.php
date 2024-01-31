@@ -2,7 +2,7 @@
 /**
  * Plugin Name: VIP Site Mods
  * Description: This plugin adds custom marketing functions.
- * Version:     1.20240117085405
+ * Version:     1.0
  * Author:      Michael McNew
  * Author URI:  https://www.visceralconcepts.com
  */
