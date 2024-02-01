@@ -5,7 +5,6 @@ class VIP_Content_Post_Type {
     public function __construct() {
         add_action( 'init', array( $this, 'register_post_type' ) );
         add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
-        // Corrected: Use the correct hook for saving meta box data
         add_action( 'save_post_vip_content', array( $this, 'save_meta_box_data' ) );
     }
 
@@ -25,13 +24,13 @@ class VIP_Content_Post_Type {
             // ... other arguments
         );
 
-        register_post_type( 'vip_content', $args );
+        register_post_type( 'vip_content', $args ); // Register the post type here
     }
 
     public function add_meta_boxes() {
         add_meta_box(
             'vip_content_options',
-            __( 'VIP Content Options', 'vip-content' ),
+            __( 'VIP Content Placement Options', 'vip-content' ),
             array( $this, 'render_meta_box' ),
             'vip_content',
             'normal',
@@ -42,7 +41,7 @@ class VIP_Content_Post_Type {
     public function render_meta_box( $post ) {
         ob_start();
         ?>
-        <h2><?php _e( 'VIP Content Options', 'vip-content' ); ?></h2>
+        <p><?php _e( 'Adjust the options for VIP Content here. You can set the number of paragraphs that will show before this content is injected, as well as set the category of posts that this content will be injected on.', 'vip-content' ); ?></p>
 
         <p>
             <label for="vip_content_paragraphs_before"><?php _e( 'Number of Paragraphs Before VIP Content:', 'vip-content' ); ?></label>
@@ -50,7 +49,7 @@ class VIP_Content_Post_Type {
         </p>
 
         <p>
-            <label for="vip_content_categories"><?php _e( 'Select Categories for VIP Content:', 'vip-content' ); ?></label>
+            <label for="vip_content_categories"><?php _e( 'Select Categories to diplay VIP Content on:', 'vip-content' ); ?></label>
             <ul id="vip_content_categories">
                 <?php
                 $categories = get_categories( array( 'hide_empty' => false ) );
@@ -85,8 +84,8 @@ class VIP_Content_Post_Type {
         }
 
         if ( !current_user_can( 'edit_post', $post_id ) ) {
-           return;
-       }
+            return;
+        }
 
        // Save the selected number of paragraphs (unchanged)
        if ( isset( $_POST['vip_content_paragraphs_before'] ) && intval( $_POST['vip_content_paragraphs_before'] ) > 0 ) {
@@ -102,5 +101,5 @@ class VIP_Content_Post_Type {
         } else {
             delete_post_meta( $post_id, '_vip_content_categories' ); // Clear meta if none selected
         }
-   }
+    }
 }

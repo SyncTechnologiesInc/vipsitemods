@@ -26,9 +26,6 @@ add_action( 'plugins_loaded', 'vip_content_load_textdomain' );
 register_activation_hook( __FILE__, array( $vip_content_post_type, 'activate' ) );
 register_deactivation_hook( __FILE__, 'vip_content_deactivate' );
 
-// Include the VIP Content meta box code
-require_once plugin_dir_path(__FILE__) . 'templates/vip-content-meta-box.php';
-
 // Call the function to display VIP Content
 add_filter( 'the_content', 'display_vip_content' );
 

@@ -1,29 +1,35 @@
 <?php
 
 function display_vip_content( $content ) {
-  // Get current post categories
-  $current_categories = wp_get_post_categories( get_the_ID() );
 
-  // Get saved categories for VIP Content
-  $vip_content_id = get_the_ID(); // Corrected: Use the current post ID
-  $saved_categories = get_post_meta( $vip_content_id, '_vip_content_categories', true );
+  // Get current post ID and categories
+  $post_id = get_the_ID();
+  $current_categories = wp_get_post_categories( $post_id );
 
-  // Check if any category matches or 'fallback' is selected
+  // Get VIP Content settings (corrected)
+  $vip_content_settings = get_post_meta( $post_id, '_vip_content_settings', true ); // Retrieve from the correct post
+  $saved_categories = isset( $vip_content_settings['categories'] ) ? $vip_content_settings['categories'] : array();
+  $number_of_paragraphs = isset( $vip_content_settings['paragraphs_before'] ) ? intval( $vip_content_settings['paragraphs_before'] ) : 0;
+
+  // Check category and fallback conditions
   if ( !empty( $saved_categories ) && ( array_intersect( $current_categories, $saved_categories ) || in_array( 'fallback', $saved_categories ) ) ) {
-    // Get VIP Content post content
-    $vip_content = get_post( $vip_content_id );
-    $vip_content_content = $vip_content->post_content;
 
-    // Corrected: Use the correct meta key for paragraph count
-    $number_of_paragraphs = get_post_meta( $vip_content_id, '_vip_content_paragraphs_before', true );
+    // Get VIP Content post (corrected)
+    $vip_content = get_post( get_the_ID(), ARRAY_A, 'vip_content' ); // Retrieve the VIP Content for the current post
+    if ( $vip_content ) {
+      $vip_content_content = $vip_content->post_content;
 
-    // Corrected: Split content into paragraphs and insert VIP Content at the specified position
-    $paragraphs = explode( "\n\n", $content );
-    if ( $number_of_paragraphs === '0' ) {
-      $content = $vip_content_content . $content;
-    } else {
-      $new_content = implode( "\n\n", array_slice( $paragraphs, 0, $number_of_paragraphs ) ) . "\n\n" . $vip_content_content . "\n\n" . implode( "\n\n", array_slice( $paragraphs, $number_of_paragraphs ) );
-      $content = $new_content;
+      // Split content into paragraphs
+      $paragraphs = explode( '</p>', $content );
+
+      // Insert VIP Content at the specified position
+      if ($number_of_paragraphs > 0) {
+        array_splice($paragraphs, $number_of_paragraphs - 1, 0, $vip_content_content); // Insert before the desired paragraph
+      } else {
+        $paragraphs = array_merge(array($vip_content_content), $paragraphs); // Insert at the beginning
+      }
+
+      $content = implode('</p>', $paragraphs);
     }
   }
 
