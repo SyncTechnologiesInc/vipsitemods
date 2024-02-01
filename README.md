@@ -10,12 +10,13 @@ VIP Content can be edited like any other post, using a page template with no hea
 The VIP Content will be injected after the defined number of paragraphs into the blog content. It will be dynamically shown only on posts that are in the selected category.
 
 == Changelog ==
+
 = v1.0.0 =
 
 *Initial release.
 
 == Issues ==
+
 = v1.0.0 =
 
-*Category selection doesn't save to post meta
-*VIP Content doesn't show on front-end
+*VIP Content doesn't show on front-end. Still debugging.
